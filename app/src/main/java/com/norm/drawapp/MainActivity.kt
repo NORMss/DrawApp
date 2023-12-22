@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import com.norm.drawapp.ui.theme.DrawAppTheme
@@ -46,11 +45,16 @@ class MainActivity : ComponentActivity() {
                             pathData.value = pathData.value.copy(
                                 lineWidth = lineWidth
                             )
+                        },
+                        {
+                            pathList.removeIf { pathD ->
+                                pathList[pathList.size - 1] == pathD
+                            }
                         }
-                    ) {
-                        pathList.removeIf { pathD ->
-                            pathList[pathList.size - 1] == pathD
-                        }
+                    ) { cap ->
+                        pathData.value = pathData.value.copy(
+                            cap = cap
+                        )
                     }
                 }
             }
@@ -104,7 +108,7 @@ fun DrawCanvas(pathData: MutableState<PathData>, pathList: SnapshotStateList<Pat
                 color = pathData.color,
                 style = Stroke(
                     pathData.lineWidth,
-                    cap = StrokeCap.Round
+                    cap = pathData.cap
                 )
             )
         }
